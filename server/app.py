@@ -67,6 +67,16 @@ def reviews():
 
     return response
 
+@app.route('/reviews/<int:id>', methods=['GET', 'DELETE']) #methods is an argument that defaults to get if it's not passed
+def review(id):
+    tgt = Review.query.filter(Review.id == id).first() 
+    if request.method == 'DELETE': #the request context lets us access the HTTP method used by the request
+        db.session.delete(tgt)
+        db.session.commit()
+
+    return make_response({"message": 'deleted successfully'} if request.method == 'DELETE' else tgt.to_dict(), 200, {"Content-Type":"Application/json"}) #unsupported methods will receive a 405 response code by default
+
+
 @app.route('/users')
 def users():
 
